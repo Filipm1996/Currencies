@@ -6,22 +6,26 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import com.example.currencies.RoomDataBase.Currency
+import com.example.currencies.data.db.Currency
 import com.example.currencies.R
-import com.example.currencies.RoomDataBase.CurrencyDao
-import com.example.currencies.RoomDataBase.CurrencyDataBase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.currencies.data.db.CurrencyDao
+import com.example.currencies.data.db.CurrencyDataBase
+import com.example.currencies.data.repositories.repository
+import com.example.currencies.ui.currencyViewModel
+import com.example.currencies.ui.currencyViewModelFactory
+import kotlinx.coroutines.*
 
 
 class RecyclerAdapter(
     private val dataSource: List<Currency>,
-    private val mContext : Context
-): RecyclerView.Adapter<RecyclerAdapter.ViewHolder> (){
+    private val mContext : Context,
+    private var lifecycleOwner: LifecycleOwner
+): RecyclerView.Adapter<RecyclerAdapter.ViewHolder> () {
+    private lateinit var repository: repository
+
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView = view.findViewById(R.id.title)
         var value: TextView = view.findViewById(R.id.value)
@@ -31,6 +35,7 @@ class RecyclerAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
+        repository = repository(mContext)
         val view =LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_element, parent, false)
         return ViewHolder(view)
     }
@@ -49,51 +54,52 @@ class RecyclerAdapter(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun setAlertDialog(currency: Currency) {
-        GlobalScope.launch(Dispatchers.Main) {
-            val db =
-                Room.databaseBuilder(mContext, CurrencyDataBase::class.java, "Mycurrency_database")
-                    .fallbackToDestructiveMigration().build()
-            val dao = db.currencyDao()
-            val buildier = AlertDialog.Builder(mContext)
-            buildier.setMessage("Do you want to add ${currency.name}?")
-            buildier.setCancelable(true)
-            buildier.setPositiveButton("yes") { dialog, _ ->
-                GlobalScope.launch(Dispatchers.IO) {
-                    val isIn = checkIfIsIn(dao, currency)
-                    if (!isIn) {
-                        dao.insertCurrency(currency)
-                        db.close()
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(mContext, "Added ${currency.name}", Toast.LENGTH_LONG)
-                                .show()
-                        }
+
+                val buildier = AlertDialog.Builder(mContext)
+                buildier.setMessage("Do you want to add ${currency.name}?")
+                buildier.setCancelable(true)
+                buildier.setPositiveButton("yes") { dialog, _ ->
+
+                    repository.getMyAllCurrencies().observeOnce(lifecycleOwner, Observer {
+                        if (it!=null){
+                    val myList = it
+                    if (myList.contains(currency)) {
+
+                        Toast.makeText(
+                            mContext,
+                            "${currency.name} is in favourites",
+                            Toast.LENGTH_LONG
+                        ).show()
+
                     } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                mContext,
-                                "com.example.currencies.RoomDataBase.Currency is in favourites",
-                                Toast.LENGTH_LONG
-                            ).show()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            repository.insertMyCurrency(currency)
                         }
+                        Toast.makeText(
+                            mContext,
+                            "Added ${currency.name}",
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
                     }
+                        }})
                 }
-            }
-            buildier.setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
-            val alert = buildier.create()
-            alert.show()
-        }
-    }
+                buildier.setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                val alert = buildier.create()
+                alert.show()
 
-    private suspend fun checkIfIsIn(dao : CurrencyDao, currency: Currency) : Boolean {
-            val listOfCurrencies = dao.getAllCurrencies()
-            var bool : Boolean = false
-        for (i in listOfCurrencies){
-            bool = i.name == currency.name
-        }
-        return bool
     }
+}
 
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
+        }
+    })
 }

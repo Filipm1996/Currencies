@@ -1,17 +1,22 @@
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.currencies.RoomDataBase.Currency
+import com.example.currencies.data.db.Currency
 import com.example.currencies.R
+import com.example.currencies.data.repositories.repository
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 
 class RecyclerAdapter2(
     private var dataSource: List<Currency>,
+    var mContext : Context
 ): RecyclerView.Adapter<RecyclerAdapter2.ViewHolder> (){
+    private lateinit var repository: repository
     var onClickDeleteItem :((Currency)->Unit)? = null
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView = view.findViewById(R.id.title)
@@ -25,6 +30,7 @@ class RecyclerAdapter2(
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
+        repository= repository(mContext)
         val view =LayoutInflater.from(parent.context).inflate(R.layout.my_currencies_element, parent, false)
         return ViewHolder(view)
     }
@@ -42,7 +48,8 @@ class RecyclerAdapter2(
         var currency = dataSource[position]
         holder.title.text = currency.name
         holder.value.text = currency.rate
-        holder.delete.setOnClickListener{ onClickDeleteItem?.invoke(currency)}
+        holder.delete.setOnClickListener{
+            onClickDeleteItem?.invoke(currency)}
     }
 
     @SuppressLint("NotifyDataSetChanged")

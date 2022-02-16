@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.currencies.RoomDataBase.Currency
+import com.example.currencies.data.db.Currency
 import java.lang.Exception
 
 class DataBaseHelper(context: Context, private val table_name : String ) :SQLiteOpenHelper(context , DATABASE_NAME, null, DATEBASE_VERSION ) {

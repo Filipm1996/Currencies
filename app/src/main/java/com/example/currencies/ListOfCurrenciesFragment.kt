@@ -1,40 +1,33 @@
 package com.example.currencies2
 
 
-import DataBaseHelper
 import RecyclerAdapter
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.example.currencies.R
-import com.example.currencies.RoomDataBase.CurrencyDao
-import com.example.currencies.RoomDataBase.CurrencyDataBase
+import com.example.currencies.data.db.Currency
+import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.FragmentListOfCurrenciesBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.example.currencies.ui.currencyViewModel
+import com.example.currencies.ui.currencyViewModelFactory
 
 
-class ListOfCurrenciesFragment : Fragment() {
+class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
     private lateinit var recyclerAdapter: RecyclerAdapter
     private lateinit var mContext : Context
-    private lateinit var database : CurrencyDataBase
-    private lateinit var dao : CurrencyDao
+    private lateinit var viewModel : currencyViewModel
     private lateinit var binding : FragmentListOfCurrenciesBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = requireContext()
-        GlobalScope.launch (Dispatchers.Main) {
-            database = Room.databaseBuilder(mContext, CurrencyDataBase::class.java, "currency_database").fallbackToDestructiveMigration().build()
-            dao = database.currencyDao()
-        }
+        val factory = currencyViewModelFactory(repository(mContext))
+        viewModel = ViewModelProvider(this,factory)[currencyViewModel::class.java]
     }
 
 
@@ -50,13 +43,14 @@ class ListOfCurrenciesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        GlobalScope.launch(Dispatchers.Main) {
-            val listOfCurrencies = dao.getAllCurrencies()
+            var listOfCurrencies : List<Currency> = listOf()
+        viewModel.getAllCurrencies().observe(viewLifecycleOwner, Observer {
+            listOfCurrencies = it
+            val lifecycleOwner = viewLifecycleOwner
             binding.recyclerViewOfList.layoutManager = LinearLayoutManager(mContext)
-            recyclerAdapter = RecyclerAdapter(listOfCurrencies, mContext)
+            recyclerAdapter = RecyclerAdapter(listOfCurrencies, mContext, lifecycleOwner)
             binding.recyclerViewOfList.adapter = recyclerAdapter
-        }
-
+            })
         }
     }
 

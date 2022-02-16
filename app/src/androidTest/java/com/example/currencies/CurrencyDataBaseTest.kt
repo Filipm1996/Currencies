@@ -1,12 +1,9 @@
 package com.example.currencies
 
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.example.currencies.RoomDataBase.Currency
-import com.example.currencies.RoomDataBase.CurrencyDao
-import com.example.currencies.RoomDataBase.CurrencyDataBase
+import com.example.currencies.data.db.Currency
+import com.example.currencies.data.db.CurrencyDao
+import com.example.currencies.data.db.CurrencyDataBase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -15,7 +12,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -49,7 +45,7 @@ class CurrencyDataBaseTest {
         val currencyToAdd = Currency("PLN", "0.241", 1)
         currencyDao.insertCurrency(currencyToAdd)
         val allCurrencies = currencyDao.getAllCurrencies()
-        assertThat(currencyToAdd in allCurrencies).isTrue()
+        assertThat(allCurrencies.value?.contains(currencyToAdd)).isTrue()
     }
 
     @Test
@@ -58,7 +54,7 @@ class CurrencyDataBaseTest {
         currencyDao.insertCurrency(currencyToDelete)
         currencyDao.deleteCurrencyByName(currencyToDelete.name)
         val allCurrencies = currencyDao.getAllCurrencies()
-        assertThat(allCurrencies.contains(currencyToDelete)).isFalse()
+        assertThat(allCurrencies.value?.contains(currencyToDelete)).isFalse()
     }
 
     @Test
@@ -69,7 +65,7 @@ class CurrencyDataBaseTest {
         currencyDao.insertCurrency(currencyToAdd2)
         currencyDao.deleteAll()
         val allCurrencies = currencyDao.getAllCurrencies()
-        assertThat(allCurrencies.isEmpty()).isTrue()
+        assertThat(allCurrencies.value?.isEmpty()).isTrue()
 
     }
 }

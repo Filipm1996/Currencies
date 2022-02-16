@@ -1,5 +1,6 @@
-package com.example.currencies.RoomDataBase
+package com.example.currencies.data.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,12 +12,12 @@ interface CurrencyDao {
     suspend fun insertCurrency(currency: Currency)
 
     @Query("SELECT * FROM currencyTable")
-    suspend fun getAllCurrencies(): List<Currency>
+    fun getAllCurrencies(): LiveData<List<Currency>>
 
     @Query("DELETE FROM currencyTable WHERE name= :name")
-    suspend fun deleteCurrencyByName (name : String)
+    fun deleteCurrencyByName (name : String)
 
     @Query("DELETE FROM currencyTable")
-    suspend fun deleteAll()
+    fun deleteAll()
 
 }
