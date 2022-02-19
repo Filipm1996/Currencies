@@ -3,6 +3,7 @@ package com.example.currencies.ui
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.example.currencies.data.repositories.deafultCurrencyRepository
 import com.example.currencies.data.repositories.repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +12,7 @@ import kotlinx.coroutines.launch
 
 
 class currencyViewModel(
-    private val repository: repository
+    private val repository: deafultCurrencyRepository
 ) : ViewModel() {
 
     var mediator : MediatorLiveData<List<com.example.currencies.data.db.Currency>> = MediatorLiveData()
