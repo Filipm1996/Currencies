@@ -27,7 +27,7 @@ class CurrencyDataBaseTest {
     @Inject
     @Named("db_test")
     lateinit var database: CurrencyDataBase
-    lateinit var currencyDao: CurrencyDao
+    private lateinit var currencyDao: CurrencyDao
 
     @Before
     fun setUp(){

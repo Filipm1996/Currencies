@@ -34,7 +34,7 @@ class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentListOfCurrenciesBinding.inflate(inflater,container,false)
         return binding.root
     }
@@ -43,7 +43,7 @@ class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            var listOfCurrencies : List<Currency> = listOf()
+        var listOfCurrencies: List<Currency>
         viewModel.getAllCurrencies().observe(viewLifecycleOwner, Observer {
             listOfCurrencies = it
             val lifecycleOwner = viewLifecycleOwner

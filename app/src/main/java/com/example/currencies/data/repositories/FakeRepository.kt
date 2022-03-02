@@ -3,9 +3,9 @@ package com.example.currencies.data.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.currencies.data.db.Currency
-import java.util.*
 
-class FakeRepository : deafultCurrencyRepository {
+
+class FakeRepository : DeafultCurrencyRepository {
 
     val myCurrenciesItems = mutableListOf<Currency>()
     val myCurrenciesObservable = MutableLiveData<List<Currency>>(myCurrenciesItems)

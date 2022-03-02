@@ -3,7 +3,7 @@ package com.example.currencies.data.repositories
 import androidx.lifecycle.LiveData
 import com.example.currencies.data.db.Currency
 
-interface deafultCurrencyRepository {
+interface DeafultCurrencyRepository {
 
     suspend fun insertMyCurrency(currency: Currency)
 
