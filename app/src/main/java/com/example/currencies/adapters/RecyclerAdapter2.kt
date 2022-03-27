@@ -1,3 +1,5 @@
+package com.example.currencies.adapters
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.currencies.data.db.Currency
 import com.example.currencies.R
 import com.example.currencies.data.repositories.repository
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 
 class RecyclerAdapter2(
@@ -40,10 +41,10 @@ class RecyclerAdapter2(
         return dataSource.size
     }
 
-    @JvmName("setOnClickDeleteItem1")
-    fun setOnClickDeleteItem(callback:(Currency)-> Unit){
-        this.onClickDeleteItem = callback
-    }
+        @JvmName("setOnClickDeleteItem1")
+        fun setOnClickDeleteItem(callback:(Currency)-> Unit){
+            this.onClickDeleteItem = callback
+        }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var currency = dataSource[position]
         holder.title.text = currency.name

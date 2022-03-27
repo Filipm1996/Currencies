@@ -1,7 +1,7 @@
 package com.example.currencies2
 
 
-import RecyclerAdapter
+import com.example.currencies.adapters.RecyclerAdapter
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater

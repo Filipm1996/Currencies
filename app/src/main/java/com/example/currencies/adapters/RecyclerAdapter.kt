@@ -1,3 +1,5 @@
+package com.example.currencies.adapters
+
 import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,14 +10,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.example.currencies.data.db.Currency
 import com.example.currencies.R
-import com.example.currencies.data.db.CurrencyDao
-import com.example.currencies.data.db.CurrencyDataBase
 import com.example.currencies.data.repositories.repository
-import com.example.currencies.ui.currencyViewModel
-import com.example.currencies.ui.currencyViewModelFactory
 import kotlinx.coroutines.*
 
 

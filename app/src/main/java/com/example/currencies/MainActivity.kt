@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.commit
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.BasicNetwork
@@ -14,6 +16,8 @@ import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.JsonArrayRequest
 import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.ActivityMainBinding
+import com.example.currencies.ui.currencyViewModel
+import com.example.currencies.ui.currencyViewModelFactory
 import com.example.currencies2.ListOfCurrenciesFragment
 import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.CoroutineScope
@@ -26,13 +30,15 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
-
+    private lateinit var viewModel : currencyViewModel
     private lateinit var repository: repository
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         repository = repository(this)
+        val factory = currencyViewModelFactory(repository)
+        viewModel = ViewModelProvider(this,factory)[currencyViewModel::class.java]
         gettingJsonString("https://api.nbp.pl/api/exchangerates/tables/A/?format=json")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -66,11 +72,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                     list.add(Currency(name,price1))
                 }
                 CoroutineScope(Dispatchers.IO).launch {
-                    repository.deleteAllCurrencies()
+                    viewModel.deleteALlCurrencies()
                     for (i in list) {
                         val currency = Currency(i.name, i.rate)
 
-                        repository.insertCurrencyToAllDatabase(currency)
+                        viewModel.insertCurrencyToAllDatabase(currency)
                     }
                     }
 

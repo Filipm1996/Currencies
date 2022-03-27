@@ -1,6 +1,6 @@
 package com.example.currencies
 
-import RecyclerAdapter2
+import com.example.currencies.adapters.RecyclerAdapter2
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
