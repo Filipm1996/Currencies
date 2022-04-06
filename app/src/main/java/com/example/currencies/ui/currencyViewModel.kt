@@ -3,12 +3,20 @@ package com.example.currencies.ui
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.BasicNetwork
+import com.android.volley.toolbox.DiskBasedCache
+import com.android.volley.toolbox.HurlStack
+import com.android.volley.toolbox.JsonArrayRequest
+import com.example.currencies.data.db.Currency
 import com.example.currencies.data.repositories.DeafultCurrencyRepository
 import com.example.currencies.data.repositories.repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class currencyViewModel(
@@ -22,13 +30,11 @@ class currencyViewModel(
 }
     fun getMyCurrencies() = repository.getMyAllCurrencies()
 
-    fun deleteMyCurrencyByName(name:String) = repository.deleteMyCurrencyByName(name)
+    fun deleteMyCurrencyByName(name:String) = CoroutineScope(Dispatchers.IO).launch { repository.deleteMyCurrencyByName(name)}
 
-    fun deleteMyCurrencies () = repository.deleteMyCurrencies()
 
     fun getAllCurrencies () = repository.getAllCurrencies()
 
-    fun deleteCurrencyByNameFromAllDatabase(name: String) = repository.deleteCurrencyByNameFromAllDatabase(name)
 
     fun deleteALlCurrencies() = repository.deleteAllCurrencies()
 
@@ -47,7 +53,7 @@ class currencyViewModel(
 
 
     }
-    private fun updateRate(myList : List<com.example.currencies.data.db.Currency>,allList : List<com.example.currencies.data.db.Currency>){
+    private fun updateRate(myList : List<Currency>,allList : List<Currency>){
 
         for(item in myList){
             for(item1 in allList){
@@ -60,7 +66,43 @@ class currencyViewModel(
         }
         mediator.value = myList
     }
-    fun getUpdatedRates(): MediatorLiveData<List<com.example.currencies.data.db.Currency>> {
+    fun getUpdatedRates(): MediatorLiveData<List<Currency>> {
         return mediator
+    }
+
+     fun gettingJsonString(url :String, cache : DiskBasedCache) {
+
+        val network = BasicNetwork(HurlStack())
+        val requestQueue = RequestQueue(cache, network).apply {
+            start()
+        }
+        val jsonObjectRequest = JsonArrayRequest(
+            Request.Method.GET, url, null,
+            { response ->
+                val list = mutableListOf<Currency>()
+                val ja2 : JSONObject? = response.getJSONObject(0)
+                val ja1 : JSONArray = ja2!!.getJSONArray("rates")
+                for(i in 0 until ja1.length()) {
+                    val object1 = ja1.getJSONObject(i)
+                    val name = object1.getString("currency")
+                    val price = object1.getString("mid")
+                    val price1 = String.format("%.4f",price.toDouble())
+                    list.add(Currency(name,price1))
+                }
+                CoroutineScope(Dispatchers.IO).launch {
+                    deleteALlCurrencies()
+                    for (i in list) {
+                        val currency = Currency(i.name, i.rate)
+
+                        insertCurrencyToAllDatabase(currency)
+                    }
+                }
+
+            },
+            {
+                println("error")
+            })
+        requestQueue.add(jsonObjectRequest)
+
     }
 }

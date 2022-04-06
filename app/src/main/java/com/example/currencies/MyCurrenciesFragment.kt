@@ -55,9 +55,8 @@ class MyCurrenciesFragment : Fragment() {
     }
 
     private fun deleteCurrency(name: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.deleteMyCurrencyByName(name)
-        }
+
+        viewModel.deleteMyCurrencyByName(name)
 
         viewModel.getMyCurrencies().observe(viewLifecycleOwner) {
             it.let { recyclerAdapter.setListOfCurrencies(it) }

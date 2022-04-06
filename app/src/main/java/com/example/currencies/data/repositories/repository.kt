@@ -5,6 +5,9 @@ import androidx.room.Room
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.db.CurrencyDataBase
 import com.example.currencies.other.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class repository(
     mContext : Context
