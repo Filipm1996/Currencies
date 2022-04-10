@@ -1,4 +1,4 @@
-package com.example.currencies2
+package com.example.currencies.Activities_and_Fragments
 
 
 import com.example.currencies.adapters.RecyclerAdapter

@@ -1,4 +1,4 @@
-package com.example.currencies
+package com.example.currencies.Activities_and_Fragments
 
 import com.example.currencies.adapters.RecyclerAdapter2
 import android.annotation.SuppressLint
@@ -16,7 +16,6 @@ import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.FragmentMyCurrenciesBinding
 import com.example.currencies.ui.currencyViewModel
 import com.example.currencies.ui.currencyViewModelFactory
-import kotlinx.coroutines.*
 
 @SuppressLint("StaticFieldLeak")
 private lateinit var recyclerAdapter: RecyclerAdapter2

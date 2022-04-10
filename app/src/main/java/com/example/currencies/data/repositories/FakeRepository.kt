@@ -2,6 +2,7 @@ package com.example.currencies.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.currencies.CurrencyAPI.Retrofit.Nomics.NomicsResponseItem
 import com.example.currencies.data.db.Currency
 
 
@@ -53,6 +54,10 @@ class FakeRepository : DeafultCurrencyRepository {
         allCurrenciesItems.add(currency)
         allCurrenciesObservable.postValue(allCurrenciesItems)
         refreshAllCurrenciesObservable()
+    }
+
+    override suspend fun getRecordsFromNomics(): ArrayList<NomicsResponseItem> {
+        TODO("Not yet implemented")
     }
 
     private fun refreshMyCurrenciesObservable(){

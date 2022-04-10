@@ -9,7 +9,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.currencies2.ListOfCurrenciesFragment
+import com.example.currencies.Activities_and_Fragments.MainActivity
+import com.example.currencies.Activities_and_Fragments.MyCurrenciesFragment
+import com.example.currencies.Activities_and_Fragments.ListOfCurrenciesFragment
 
 import org.junit.Rule
 import org.junit.Test

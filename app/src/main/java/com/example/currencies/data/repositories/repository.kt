@@ -2,6 +2,8 @@ package com.example.currencies.data.repositories
 
 import android.content.Context
 import androidx.room.Room
+import com.example.currencies.CurrencyAPI.Retrofit.Nomics.NomicsResponseItem
+import com.example.currencies.CurrencyAPI.Retrofit.Nomics.RetrofitInstanceForNomics
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.db.CurrencyDataBase
 import com.example.currencies.other.Constants
@@ -34,5 +36,8 @@ class repository(
     override fun deleteAllCurrencies() = listdb.currencyDao().deleteAll()
 
     override suspend fun insertCurrencyToAllDatabase(currency: Currency) = listdb.currencyDao().insertCurrency(currency)
+
+
+    override suspend fun getRecordsFromNomics(): ArrayList<NomicsResponseItem> = RetrofitInstanceForNomics.api.getRecordsFromNomics()
 
 }

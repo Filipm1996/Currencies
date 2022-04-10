@@ -44,12 +44,12 @@ class currencyViewModel(
     init {
         val mylist = repository.getMyAllCurrencies()
         val list = repository.getAllCurrencies()
-        mediator.addSource(mylist, androidx.lifecycle.Observer {
+        mediator.addSource(mylist) {
             list.value?.let { it1 -> updateRate(it, it1) }
-        })
-        mediator.addSource(list, androidx.lifecycle.Observer {
+        }
+        mediator.addSource(list) {
             mylist.value?.let { it1 -> updateRate(it1, it) }
-        })
+        }
 
 
     }
@@ -70,7 +70,7 @@ class currencyViewModel(
         return mediator
     }
 
-     fun gettingJsonString(url :String, cache : DiskBasedCache) {
+     fun gettingJsonStringFromNBP(url :String, cache : DiskBasedCache) {
 
         val network = BasicNetwork(HurlStack())
         val requestQueue = RequestQueue(cache, network).apply {
@@ -105,4 +105,6 @@ class currencyViewModel(
         requestQueue.add(jsonObjectRequest)
 
     }
+
+    suspend fun getRecordsFromNomics() =  repository.getRecordsFromNomics()
 }

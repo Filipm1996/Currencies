@@ -23,10 +23,8 @@ class RecyclerAdapter2(
         var title: TextView = view.findViewById(R.id.title)
         var value: TextView = view.findViewById(R.id.value)
         var delete: ImageButton = view.findViewById(R.id.deleteButton)
-
-
-
     }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

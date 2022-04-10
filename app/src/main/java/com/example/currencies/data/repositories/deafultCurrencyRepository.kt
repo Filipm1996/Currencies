@@ -1,6 +1,8 @@
 package com.example.currencies.data.repositories
 
 import androidx.lifecycle.LiveData
+import com.example.currencies.CurrencyAPI.Retrofit.Nomics.NomicsResponseItem
+import com.example.currencies.CurrencyAPI.Retrofit.Nomics.RetrofitInstanceForNomics
 import com.example.currencies.data.db.Currency
 
 interface DeafultCurrencyRepository {
@@ -20,4 +22,6 @@ interface DeafultCurrencyRepository {
     fun deleteAllCurrencies()
 
     suspend fun insertCurrencyToAllDatabase(currency: Currency)
+
+    suspend fun getRecordsFromNomics():  ArrayList<NomicsResponseItem>
 }
