@@ -17,9 +17,9 @@ class repository(
 ): DeafultCurrencyRepository {
 
 
-    private var listdb : CurrencyDataBase = Room.databaseBuilder(mContext, CurrencyDataBase::class.java, Constants.LIST_OF_CURRENCIES).build()
+    private var listdb : CurrencyDataBase = Room.databaseBuilder(mContext, CurrencyDataBase::class.java, Constants.LIST_OF_CURRENCIES).fallbackToDestructiveMigration().build()
 
-    private var mydb : CurrencyDataBase = Room.databaseBuilder(mContext, CurrencyDataBase::class.java, Constants.MY_LIST_DATABASE).build()
+    private var mydb : CurrencyDataBase = Room.databaseBuilder(mContext, CurrencyDataBase::class.java, Constants.MY_LIST_DATABASE).fallbackToDestructiveMigration().build()
 
     override suspend fun insertMyCurrency(currency: Currency) = mydb.currencyDao().insertCurrency(currency)
 

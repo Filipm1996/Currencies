@@ -9,8 +9,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.example.currencies.CurrencyAPI.Retrofit.Nomics.NomicsResponseItem
 import com.example.currencies.R
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.repositories.repository
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class RecyclerAdapterForCyrpto(
     private val mContext : Context,
     private val lifecycleOwner: LifecycleOwner,
-    private val listOfCryptocurrencies : ArrayList<NomicsResponseItem>
+    private val listOfCryptocurrencies : List<Currency>
 ) : RecyclerView.Adapter<RecyclerAdapterForCyrpto.ViewHolder>() {
     private lateinit var repository: repository
     class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
@@ -38,14 +38,20 @@ class RecyclerAdapterForCyrpto(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cryptoCurrency = listOfCryptocurrencies[position]
+        repository.getAllCurrencies().observe(lifecycleOwner, Observer { list ->
+            val USD = list.find { it.name == "dolar amerykański" }
+            val USDwithDot = USD!!.rate.replace(",", ".")
+            val priceOfCurrency = cryptoCurrency.rate.toDouble()*USDwithDot.toDouble()
+            val cryptoPLN = Currency(cryptoCurrency.name,priceOfCurrency.toString(), "crypto")
+            holder.value.text = String.format("%.4f", priceOfCurrency)
+            holder.addButton.setOnClickListener {
+                setAlertDialog(cryptoPLN)
+            }
+        })
         holder.title.text = cryptoCurrency.name
-        holder.value.text = String.format("%.4f", cryptoCurrency.price.toDouble()) + "$"
-        holder.addButton.setOnClickListener {
-            setAlertDialog(cryptoCurrency)
-        }
     }
 
-    private fun setAlertDialog(cryptoCurrency: NomicsResponseItem) {
+    private fun setAlertDialog(cryptoCurrency: Currency) {
         val buildier = AlertDialog.Builder(mContext)
         buildier.setMessage("Do you want to add ${cryptoCurrency.name}?")
         buildier.setCancelable(true)
@@ -54,8 +60,8 @@ class RecyclerAdapterForCyrpto(
             repository.getMyAllCurrencies().observeOnce(lifecycleOwner) {
                 if (it != null) {
                     val myList = it
-                    val formattedPrice = String.format("%.4f", cryptoCurrency.price.toDouble())
-                    val cryptoItem = Currency(cryptoCurrency.name, formattedPrice)
+                    val formattedPrice = String.format("%.4f", cryptoCurrency.rate.toDouble())
+                    val cryptoItem = Currency(cryptoCurrency.name, formattedPrice, "crypto")
                     var isIn = false
                     for (i in myList) {
                         if (i.name == cryptoCurrency.name) {

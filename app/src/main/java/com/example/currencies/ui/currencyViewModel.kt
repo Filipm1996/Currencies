@@ -79,7 +79,6 @@ class currencyViewModel(
         val jsonObjectRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
             { response ->
-                val list = mutableListOf<Currency>()
                 val ja2 : JSONObject? = response.getJSONObject(0)
                 val ja1 : JSONArray = ja2!!.getJSONArray("rates")
                 for(i in 0 until ja1.length()) {
@@ -87,17 +86,12 @@ class currencyViewModel(
                     val name = object1.getString("currency")
                     val price = object1.getString("mid")
                     val price1 = String.format("%.4f",price.toDouble())
-                    list.add(Currency(name,price1))
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-                    deleteALlCurrencies()
-                    for (i in list) {
-                        val currency = Currency(i.name, i.rate)
-
+                    val currency = (Currency(name,price1,"normal"))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        deleteALlCurrencies()
                         insertCurrencyToAllDatabase(currency)
+                        }
                     }
-                }
-
             },
             {
                 println("error")
@@ -107,4 +101,16 @@ class currencyViewModel(
     }
 
     suspend fun getRecordsFromNomics() =  repository.getRecordsFromNomics()
+
+    fun getRecordsFromNomicsAndSaveToDb() {
+        CoroutineScope(Dispatchers.IO).launch{
+            val list = getRecordsFromNomics()
+            list.forEach {
+                val price = String.format("%.4f",it.price.toDouble())
+                price.replace(",",".")
+                val currency = Currency(it.name, price, "crypto")
+                insertCurrencyToAllDatabase(currency)
+            }
+        }
+    }
 }

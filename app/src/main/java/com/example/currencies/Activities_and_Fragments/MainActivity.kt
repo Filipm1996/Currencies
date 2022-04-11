@@ -28,8 +28,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         setContentView(binding.root)
         binding.bottomNav.setOnItemSelectedListener(this)
         setUpViewModel()
-        myCurrenciesClicked()
         viewModel.gettingJsonStringFromNBP("https://api.nbp.pl/api/exchangerates/tables/A/?format=json",DiskBasedCache(cacheDir, 1024* 1024))
+        viewModel.getRecordsFromNomicsAndSaveToDb()
+        myCurrenciesClicked()
+
     }
 
     private fun setUpViewModel() {

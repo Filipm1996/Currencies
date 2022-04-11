@@ -51,7 +51,7 @@ class RecyclerAdapter(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     private fun setAlertDialog(currency: Currency) {
 
                 val buildier = AlertDialog.Builder(mContext)
@@ -59,29 +59,30 @@ class RecyclerAdapter(
                 buildier.setCancelable(true)
                 buildier.setPositiveButton("yes") { dialog, _ ->
 
-                    repository.getMyAllCurrencies().observeOnce(lifecycleOwner, Observer {
-                        if (it!=null){
-                    val myList = it
-                    if (myList.contains(currency)) {
+                    repository.getMyAllCurrencies().observeOnce(lifecycleOwner) {
+                        if (it != null) {
+                            val myList = it
+                            if (myList.contains(currency)) {
 
-                        Toast.makeText(
-                            mContext,
-                            "${currency.name} is in favourites",
-                            Toast.LENGTH_LONG
-                        ).show()
+                                Toast.makeText(
+                                    mContext,
+                                    "${currency.name} is in favourites",
+                                    Toast.LENGTH_LONG
+                                ).show()
 
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            repository.insertMyCurrency(currency)
+                            } else {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    repository.insertMyCurrency(currency)
+                                }
+                                Toast.makeText(
+                                    mContext,
+                                    "Added ${currency.name}",
+                                    Toast.LENGTH_LONG
+                                )
+                                    .show()
+                            }
                         }
-                        Toast.makeText(
-                            mContext,
-                            "Added ${currency.name}",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
                     }
-                        }})
                 }
                 buildier.setNegativeButton("No") { dialog, _ ->
                     dialog.dismiss()

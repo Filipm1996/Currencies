@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.currencies.adapters.RecyclerAdapterForCyrpto
@@ -40,14 +41,13 @@ class CryptoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        CoroutineScope(Dispatchers.IO).launch {
-            val listOfCruptocurrecies = viewModel.getRecordsFromNomics()
-            withContext(Dispatchers.Main){
-                val lifecycleOwner = viewLifecycleOwner
-                binding.recyclerViewForCrypto.layoutManager = LinearLayoutManager(mContext)
-                val recyclerAdapter = RecyclerAdapterForCyrpto(mContext,lifecycleOwner,listOfCruptocurrecies)
-                binding.recyclerViewForCrypto.adapter = recyclerAdapter
-            }
-        }
+        val lifecycleOwner = viewLifecycleOwner
+            viewModel.getAllCurrencies().observe(lifecycleOwner, Observer {
+                it.filter {it.typeOfCurrency == "crypto"}.let {
+                    binding.recyclerViewForCrypto.layoutManager = LinearLayoutManager(mContext)
+                    val recyclerAdapter = RecyclerAdapterForCyrpto(mContext, lifecycleOwner, it)
+                    binding.recyclerViewForCrypto.adapter = recyclerAdapter
+                }
+            })
     }
 }
