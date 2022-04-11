@@ -1,7 +1,6 @@
 package com.example.currencies.Activities_and_Fragments
 
 import com.example.currencies.adapters.RecyclerAdapter2
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -17,13 +16,13 @@ import com.example.currencies.databinding.FragmentMyCurrenciesBinding
 import com.example.currencies.ui.currencyViewModel
 import com.example.currencies.ui.currencyViewModelFactory
 
-@SuppressLint("StaticFieldLeak")
-private lateinit var recyclerAdapter: RecyclerAdapter2
+
+
 private lateinit var viewModel : currencyViewModel
 private lateinit var binding: FragmentMyCurrenciesBinding
 
 class MyCurrenciesFragment : Fragment() {
-
+    private var recyclerAdapter : RecyclerAdapter2? = null
     private lateinit var mContext: Context
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +32,7 @@ class MyCurrenciesFragment : Fragment() {
     }
 
     private fun setOnClickListeners() {
-        recyclerAdapter.setOnClickDeleteItem {
+        recyclerAdapter!!.setOnClickDeleteItem {
             setDeleteAlertDialog(it.name)
         }
     }
@@ -58,7 +57,7 @@ class MyCurrenciesFragment : Fragment() {
         viewModel.deleteMyCurrencyByName(name)
 
         viewModel.getMyCurrencies().observe(viewLifecycleOwner) {
-            it.let { recyclerAdapter.setListOfCurrencies(it) }
+            it.let { recyclerAdapter!!.setListOfCurrencies(it) }
         }
     }
 
@@ -67,25 +66,18 @@ class MyCurrenciesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMyCurrenciesBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         with(viewModel) {
             getUpdatedRates().observe(
                 viewLifecycleOwner
             ) {
-                recyclerAdapter = RecyclerAdapter2(it, mContext)
+                recyclerAdapter = RecyclerAdapter2()
+                recyclerAdapter!!.setListOfCurrencies(it)
+                setOnClickListeners()
                 binding.recyclerViewOfList.layoutManager = LinearLayoutManager(mContext)
                 binding.recyclerViewOfList.adapter = recyclerAdapter
-                setOnClickListeners()
             }
         }
-
+        return binding.root
     }
-
 
 }
