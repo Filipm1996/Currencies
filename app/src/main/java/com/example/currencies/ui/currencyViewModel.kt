@@ -55,7 +55,6 @@ class currencyViewModel(
 
     }
     private fun updateRate(myList : List<Currency>,allList : List<Currency>){
-
         for(item in myList){
             for(item1 in allList){
                 if (item1.name == item.name){
@@ -71,35 +70,6 @@ class currencyViewModel(
         return mediator
     }
 
-     fun gettingJsonStringFromNBP(url :String, cache : DiskBasedCache) {
-
-        val network = BasicNetwork(HurlStack())
-        val requestQueue = RequestQueue(cache, network).apply {
-            start()
-        }
-        val jsonObjectRequest = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            { response ->
-                val ja2 : JSONObject? = response.getJSONObject(0)
-                val ja1 : JSONArray = ja2!!.getJSONArray("rates")
-                for(i in 0 until ja1.length()) {
-                    val object1 = ja1.getJSONObject(i)
-                    val name = object1.getString("currency")
-                    val price = object1.getString("mid")
-                    val price1 = String.format("%.4f",price.toDouble())
-                    val currency = (Currency(name,price1,"normal"))
-                    CoroutineScope(Dispatchers.IO).launch {
-                        deleteALlCurrencies()
-                        insertCurrencyToAllDatabase(currency)
-                        }
-                    }
-            },
-            {
-                println("error")
-            })
-        requestQueue.add(jsonObjectRequest)
-
-    }
 
     suspend fun getRecordsFromNomics() =  repository.getRecordsFromNomics()
 
@@ -115,99 +85,9 @@ class currencyViewModel(
 
     fun getAPIRecords(url :String, cache : DiskBasedCache){
         CoroutineScope(Dispatchers.IO).launch {
-        gettingJsonStringFromNBP(url,cache)
+        repository.gettingJsonStringFromNBP(url,cache)
         getRecordsFromNomicsAndSaveToDb()
         }
     }
 
-    fun setAlertDialog(currency: Currency , mContext : Context , lifecycleOwner: LifecycleOwner) {
-
-        val buildier = AlertDialog.Builder(mContext)
-        buildier.setMessage("Do you want to add ${currency.name}?")
-        buildier.setCancelable(true)
-        buildier.setPositiveButton("yes") { dialog, _ ->
-
-            repository.getMyAllCurrencies().observeOnce(lifecycleOwner) {
-                if (it != null) {
-                    val myList = it
-                    if (myList.contains(currency)) {
-
-                        Toast.makeText(
-                            mContext,
-                            "${currency.name} is in favourites",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                    } else {
-                        insertMyCurrency(currency)
-                        Toast.makeText(
-                            mContext,
-                            "Added ${currency.name}",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                    }
-                }
-            }
-        }
-        buildier.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-        }
-        val alert = buildier.create()
-        alert.show()
-
-    }
-    fun setAddButtonAlertDialog(cryptoCurrency: Currency, mContext:Context, lifecycleOwner: LifecycleOwner) {
-        val buildier = AlertDialog.Builder(mContext)
-        buildier.setMessage("Do you want to add ${cryptoCurrency.name}?")
-        buildier.setCancelable(true)
-        buildier.setPositiveButton("yes") { dialog, _ ->
-
-            repository.getMyAllCurrencies().observe(lifecycleOwner, Observer {
-                if (it != null) {
-                    val myList = it
-                    val formattedPrice = String.format("%.4f", cryptoCurrency.rate.toDouble())
-                    val cryptoItem = Currency(cryptoCurrency.name, formattedPrice, "crypto")
-                    var isIn = false
-                    for (i in myList) {
-                        if (i.name == cryptoCurrency.name) {
-                            isIn = true
-                        }
-                    }
-                    if (isIn) {
-                        Toast.makeText(
-                            mContext,
-                            "${cryptoCurrency.name} is in favourites",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            repository.insertMyCurrency(cryptoItem)
-                        }
-                        Toast.makeText(
-                            mContext,
-                            "Added ${cryptoItem.name}",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                    }
-                }
-            })
-        }
-        buildier.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-        }
-        val alert = buildier.create()
-        alert.show()
-
-    }
-
-    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-        observe(lifecycleOwner, object : Observer<T> {
-            override fun onChanged(t: T?) {
-                observer.onChanged(t)
-                removeObserver(this)
-            }
-        })
-    }
 }

@@ -2,7 +2,8 @@ package com.example.currencies.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.currencies.CurrencyAPI.Retrofit.Nomics.NomicsResponseItem
+import com.android.volley.toolbox.DiskBasedCache
+import com.example.currencies.Nomics.NomicsResponseItem
 import com.example.currencies.data.db.Currency
 
 
@@ -57,6 +58,10 @@ class FakeRepository : DeafultCurrencyRepository {
     }
 
     override suspend fun getRecordsFromNomics(): ArrayList<NomicsResponseItem> {
+        TODO("Not yet implemented")
+    }
+
+    override fun gettingJsonStringFromNBP(url: String, cache: DiskBasedCache) {
         TODO("Not yet implemented")
     }
 

@@ -1,4 +1,4 @@
-package com.example.currencies.CurrencyAPI.Retrofit.Nomics
+package com.example.currencies.Nomics
 
 data class NomicsResponseItem(
     val `1d`: D,

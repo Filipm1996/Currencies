@@ -1,8 +1,6 @@
-package com.example.currencies.CurrencyAPI.Retrofit.Nomics
+package com.example.currencies.Nomics
 
 import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Query
 
 interface NomicsAPI {
 

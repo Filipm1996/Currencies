@@ -1,8 +1,8 @@
 package com.example.currencies.data.repositories
 
 import androidx.lifecycle.LiveData
-import com.example.currencies.CurrencyAPI.Retrofit.Nomics.NomicsResponseItem
-import com.example.currencies.CurrencyAPI.Retrofit.Nomics.RetrofitInstanceForNomics
+import com.android.volley.toolbox.DiskBasedCache
+import com.example.currencies.Nomics.NomicsResponseItem
 import com.example.currencies.data.db.Currency
 
 interface DeafultCurrencyRepository {
@@ -24,4 +24,6 @@ interface DeafultCurrencyRepository {
     suspend fun insertCurrencyToAllDatabase(currency: Currency)
 
     suspend fun getRecordsFromNomics():  ArrayList<NomicsResponseItem>
+
+    fun gettingJsonStringFromNBP(url :String, cache : DiskBasedCache)
 }

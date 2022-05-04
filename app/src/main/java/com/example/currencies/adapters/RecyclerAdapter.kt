@@ -1,5 +1,6 @@
 package com.example.currencies.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,8 +44,10 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder> () {
         this.onAddButtonClick = callback
     }
 
-    fun addList( list : List<Currency>){
-        this.dataSource = list
+    @SuppressLint("NotifyDataSetChanged")
+    fun addList(list : List<Currency>){
+        this.dataSource = list.filter { it.typeOfCurrency=="normal" }
+        notifyDataSetChanged()
     }
 
 }

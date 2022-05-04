@@ -1,4 +1,4 @@
-package com.example.currencies.CurrencyAPI.Retrofit.Nomics
+package com.example.currencies.Nomics
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
