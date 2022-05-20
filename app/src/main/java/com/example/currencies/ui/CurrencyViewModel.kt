@@ -1,26 +1,18 @@
 package com.example.currencies.ui
 
 
-import android.app.AlertDialog
-import android.content.Context
-import android.widget.Toast
+
 import androidx.lifecycle.*
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.BasicNetwork
 import com.android.volley.toolbox.DiskBasedCache
-import com.android.volley.toolbox.HurlStack
-import com.android.volley.toolbox.JsonArrayRequest
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.repositories.DeafultCurrencyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
 
 
-class currencyViewModel(
+
+class CurrencyViewModel(
     private val repository: DeafultCurrencyRepository
 ) : ViewModel() {
 
@@ -36,13 +28,33 @@ class currencyViewModel(
 
     fun getAllCurrencies () = repository.getAllCurrencies()
 
+    fun deleteMyCurrencies() = repository.deleteMyCurrencies()
 
-    fun deleteALlCurrencies() = repository.deleteAllCurrencies()
 
     suspend fun insertCurrencyToAllDatabase(currency: Currency) = CoroutineScope(Dispatchers.Main).launch {
         repository.insertCurrencyToAllDatabase(currency)
     }
-    init {
+
+    private fun updateRate(myList : List<Currency>,allList : List<Currency>){
+        val usd = allList.find { it.name=="dolar amerykański" }
+        for(item in myList){
+            for(item1 in allList){
+                if(item.typeOfCurrency!="crypto"){
+                if (item1.name == item.name) {
+                    val index = allList.indexOf(item1)
+                    item.rate = allList[index].rate
+                }
+                }else if(item.typeOfCurrency == "crypto"){
+                    if(item1.name == item.name){
+                        item.rate = (item1.rate.toDouble() * usd!!.rate.toDouble()).toString()
+                    }
+                }
+            }
+
+        }
+        mediator.value = myList
+    }
+    fun getUpdatedRates(): MediatorLiveData<List<Currency>> {
         val mylist = repository.getMyAllCurrencies()
         val list = repository.getAllCurrencies()
         mediator.addSource(mylist) {
@@ -51,22 +63,6 @@ class currencyViewModel(
         mediator.addSource(list) {
             mylist.value?.let { it1 -> updateRate(it1, it) }
         }
-
-
-    }
-    private fun updateRate(myList : List<Currency>,allList : List<Currency>){
-        for(item in myList){
-            for(item1 in allList){
-                if (item1.name == item.name){
-                    val index = allList.indexOf(item1)
-                    item.rate = allList[index].rate
-                }
-            }
-
-        }
-        mediator.value = myList
-    }
-    fun getUpdatedRates(): MediatorLiveData<List<Currency>> {
         return mediator
     }
 
@@ -87,6 +83,7 @@ class currencyViewModel(
         CoroutineScope(Dispatchers.IO).launch {
         repository.gettingJsonStringFromNBP(url,cache)
         getRecordsFromNomicsAndSaveToDb()
+
         }
     }
 

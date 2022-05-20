@@ -15,9 +15,12 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "com.example.currencies.HiltTestRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -50,6 +53,7 @@ dependencies {
     //Room
     implementation("androidx.room:room-runtime:2.4.1")
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.test.ext:junit-ktx:1.1.3'
     annotationProcessor("androidx.room:room-compiler:2.4.1")
     kapt("androidx.room:room-compiler:2.4.1")
     implementation("androidx.room:room-ktx:2.4.1")
@@ -87,20 +91,18 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-native-mt"
     testImplementation "com.google.truth:truth:1.1.3"
     testImplementation "org.mockito:mockito-core:4.3.1"
-    // androidx.test
-    def androidx_test = "1.3.0"
-    androidTestImplementation "androidx.test:runner:$androidx_test"
-    androidTestImplementation "androidx.test:core:$androidx_test"
-    androidTestImplementation 'androidx.test:rules:1.4.0'
-    // androidx.fragment
-    def fragment_version = "1.4.1"
-    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
 
-    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
+
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    debugImplementation "androidx.fragment:fragment-testing:1.4.1"
+    androidTestImplementation 'net.bytebuddy:byte-buddy-agent:1.12.9'
+    androidTestImplementation 'androidx.test:core-ktx:1.4.0'
+    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
     androidTestImplementation 'com.google.truth:truth:1.1.3'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-
     //Espresso
+    androidTestImplementation group: 'org.mockito', name: 'mockito-core', version: '4.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation ('com.android.support.test.espresso:espresso-contrib:3.0.2', {
         exclude group: 'com.android.support', module: 'appcompat'
@@ -109,8 +111,8 @@ dependencies {
     })
 
 
+
     implementation "com.google.dagger:hilt-android:2.40.5"
     kapt "com.google.dagger:hilt-compiler:2.40.5"
-    androidTestImplementation "com.google.dagger:hilt-android-testing:2.40.5"
     kaptAndroidTest "com.google.dagger:hilt-compiler:2.40.5"
 }

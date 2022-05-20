@@ -41,7 +41,7 @@ class RecyclerAdapter2 : RecyclerView.Adapter<RecyclerAdapter2.ViewHolder> (){
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currency = dataSource!![position]
         holder.title.text = currency.name
-        holder.value.text = currency.rate
+        holder.value.text = String.format("%.4f", currency.rate.toDouble())
         holder.delete.setOnClickListener{
             onClickDeleteItem?.invoke(currency)}
     }

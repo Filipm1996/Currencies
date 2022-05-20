@@ -1,37 +1,38 @@
 package com.example.currencies
 
-import androidx.test.filters.SmallTest
+
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.db.CurrencyDao
 import com.example.currencies.data.db.CurrencyDataBase
+import com.example.currencies.other.Constants
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
-import javax.inject.Named
+import org.junit.runner.RunWith
 
 
-@HiltAndroidTest
-@SmallTest
+@RunWith(AndroidJUnit4::class)
 class CurrencyDataBaseTest {
 
     @get:Rule
-    var hiltRule= HiltAndroidRule(this)
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
 
-    @Inject
-    @Named("db_test")
+
     lateinit var database: CurrencyDataBase
     private lateinit var currencyDao: CurrencyDao
 
     @Before
     fun setUp(){
-        hiltRule.inject()
+        database = Room.databaseBuilder(ApplicationProvider.getApplicationContext(), CurrencyDataBase::class.java, Constants.LIST_OF_CURRENCIES).allowMainThreadQueries().build()
         currencyDao = database.currencyDao()
     }
 
@@ -42,30 +43,30 @@ class CurrencyDataBaseTest {
 
     @Test
     fun insertCurrencyTest () = runBlocking{
-        val currencyToAdd = Currency("PLN", "0.241", 1)
+        val currencyToAdd = Currency("PLN", "0.241", "normal",1)
         currencyDao.insertCurrency(currencyToAdd)
-        val allCurrencies = currencyDao.getAllCurrencies()
-        assertThat(allCurrencies.value?.contains(currencyToAdd)).isTrue()
+        val allCurrencies = currencyDao.getAllCurrencies().getOrAwaitValue()
+        assertThat(allCurrencies.contains(currencyToAdd)).isTrue()
     }
 
     @Test
     fun deleteCurrencyByNameTest() = runBlocking {
-        val currencyToDelete = Currency("PLN", "0.241")
+        val currencyToDelete = Currency("PLN", "0.241","normal")
         currencyDao.insertCurrency(currencyToDelete)
         currencyDao.deleteCurrencyByName(currencyToDelete.name)
-        val allCurrencies = currencyDao.getAllCurrencies()
-        assertThat(allCurrencies.value?.contains(currencyToDelete)).isFalse()
+        val allCurrencies = currencyDao.getAllCurrencies().getOrAwaitValue()
+        assertThat(allCurrencies.contains(currencyToDelete)).isFalse()
     }
 
     @Test
     fun deleteAllTest () = runBlocking {
-        val currencyToAdd1 = Currency("PLN", "0.241")
-        val currencyToAdd2 = Currency("PLNN", "0.242")
+        val currencyToAdd1 = Currency("PLN", "0.241","normal")
+        val currencyToAdd2 = Currency("PLNN", "0.242","normal")
         currencyDao.insertCurrency(currencyToAdd1)
         currencyDao.insertCurrency(currencyToAdd2)
         currencyDao.deleteAll()
-        val allCurrencies = currencyDao.getAllCurrencies()
-        assertThat(allCurrencies.value?.isEmpty()).isTrue()
+        val allCurrencies = currencyDao.getAllCurrencies().getOrAwaitValue()
+        assertThat(allCurrencies.isEmpty()).isTrue()
 
     }
 }

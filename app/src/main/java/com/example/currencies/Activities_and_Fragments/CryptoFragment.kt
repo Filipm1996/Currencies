@@ -15,8 +15,8 @@ import com.example.currencies.adapters.RecyclerAdapterForCyrpto
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.FragmentCryptoBinding
-import com.example.currencies.ui.currencyViewModel
-import com.example.currencies.ui.currencyViewModelFactory
+import com.example.currencies.ui.CurrencyViewModel
+import com.example.currencies.ui.CurrencyViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,13 +27,13 @@ class CryptoFragment : Fragment() {
     private lateinit var  lifecycleOwner :LifecycleOwner
     private lateinit var mContext: Context
     private lateinit var binding : FragmentCryptoBinding
-    private lateinit var viewModel : currencyViewModel
+    private lateinit var viewModel : CurrencyViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext =requireContext()
         recyclerAdapter = RecyclerAdapterForCyrpto()
-        val factory = currencyViewModelFactory(repository(mContext))
-        viewModel = ViewModelProvider(this,factory)[currencyViewModel::class.java]
+        val factory = CurrencyViewModelFactory(repository(mContext))
+        viewModel = ViewModelProvider(this,factory)[CurrencyViewModel::class.java]
         }
 
     override fun onCreateView(

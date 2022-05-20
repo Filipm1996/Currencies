@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/list_of_cryptocurrencies"
+        android:icon="@drawable/btc_512"
+        android:title="Cryptocurrencies"/>
     <item
         android:id="@+id/my_currencies"
         android:icon="@drawable/ic_baseline_account_circle_24"
@@ -10,8 +13,5 @@
         android:id="@+id/list_of_currencies"
         android:icon="@drawable/ic_baseline_format_list_bulleted_24"
         android:title="@string/title_dashboard" />
-    <item
-        android:id="@+id/list_of_cryptocurrencies"
-        android:icon="@drawable/btc_512"
-        android:title="Cryptocurrencies"/>
+
 </menu>

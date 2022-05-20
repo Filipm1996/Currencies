@@ -15,22 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.FragmentListOfCurrenciesBinding
-import com.example.currencies.ui.currencyViewModel
-import com.example.currencies.ui.currencyViewModelFactory
+import com.example.currencies.ui.CurrencyViewModel
+import com.example.currencies.ui.CurrencyViewModelFactory
 
 
 class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
     private var recyclerAdapter: RecyclerAdapter? = null
     private lateinit var mContext : Context
-    private lateinit var viewModel : currencyViewModel
+    private lateinit var viewModel : CurrencyViewModel
     private lateinit var binding : FragmentListOfCurrenciesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = requireContext()
         recyclerAdapter = RecyclerAdapter()
-        val factory = currencyViewModelFactory(repository(mContext))
-        viewModel = ViewModelProvider(this,factory)[currencyViewModel::class.java]
+        val factory = CurrencyViewModelFactory(repository(mContext))
+        viewModel = ViewModelProvider(this,factory)[CurrencyViewModel::class.java]
         }
 
     private fun setUpClickListeners() {

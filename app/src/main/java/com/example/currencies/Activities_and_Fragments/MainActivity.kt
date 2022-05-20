@@ -11,14 +11,14 @@ import com.android.volley.toolbox.DiskBasedCache
 import com.example.currencies.R
 import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.ActivityMainBinding
-import com.example.currencies.ui.currencyViewModel
-import com.example.currencies.ui.currencyViewModelFactory
+import com.example.currencies.ui.CurrencyViewModel
+import com.example.currencies.ui.CurrencyViewModelFactory
 import com.google.android.material.navigation.NavigationBarView
 
 
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
-    private lateinit var viewModel : currencyViewModel
+    private lateinit var viewModel : CurrencyViewModel
     private lateinit var repository: repository
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,29 +28,31 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         setContentView(binding.root)
         binding.bottomNav.setOnItemSelectedListener(this)
         setUpViewModel()
-        viewModel.getAPIRecords("https://api.nbp.pl/api/exchangerates/tables/A/?format=json",DiskBasedCache(cacheDir, 1024* 1024))
-        myCurrenciesClicked()
-
+        viewModel.getAPIRecords(
+            "https://api.nbp.pl/api/exchangerates/tables/A/?format=json",
+                DiskBasedCache(cacheDir, 1024 * 1024)
+            )
+        listOfCurrenciesClicked()
     }
 
     private fun setUpViewModel() {
         repository = repository(this)
-        val factory = currencyViewModelFactory(repository)
-        viewModel = ViewModelProvider(this,factory)[currencyViewModel::class.java]
+        val factory = CurrencyViewModelFactory(repository)
+        viewModel = ViewModelProvider(this,factory)[CurrencyViewModel::class.java]
     }
 
 
     override fun onNavigationItemSelected(item: MenuItem) =
         when (item.itemId){
-            R.id.my_currencies -> {
-                myCurrenciesClicked()
-            }
 
             R.id.list_of_currencies -> {
                 listOfCurrenciesClicked()
             }
             R.id.list_of_cryptocurrencies -> {
                 cryptoCurrenciesClicked()
+            }
+            R.id.my_currencies -> {
+                myCurrenciesClicked()
             }
             else ->false
         }
