@@ -83,7 +83,6 @@ class CurrencyViewModel(
         CoroutineScope(Dispatchers.IO).launch {
         repository.gettingJsonStringFromNBP(url,cache)
         getRecordsFromNomicsAndSaveToDb()
-
         }
     }
 
