@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id "org.jetbrains.kotlin.kapt"
-    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -109,10 +108,4 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'recyclerview-v7'
     })
-
-
-
-    implementation "com.google.dagger:hilt-android:2.40.5"
-    kapt "com.google.dagger:hilt-compiler:2.40.5"
-    kaptAndroidTest "com.google.dagger:hilt-compiler:2.40.5"
 }

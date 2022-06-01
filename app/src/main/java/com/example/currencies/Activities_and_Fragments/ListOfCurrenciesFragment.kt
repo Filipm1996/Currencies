@@ -46,7 +46,7 @@ class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
     ): View {
         binding = FragmentListOfCurrenciesBinding.inflate(inflater,container,false)
         viewModel.getAllCurrencies().observe(viewLifecycleOwner, Observer {
-            recyclerAdapter!!.addList(it)
+            recyclerAdapter!!.addList(it.filter { it.typeOfCurrency == "normal" })
             binding.recyclerViewOfList.layoutManager = LinearLayoutManager(mContext)
             binding.recyclerViewOfList.adapter = recyclerAdapter
         })
