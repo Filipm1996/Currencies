@@ -31,7 +31,7 @@ class RecyclerAdapter2 : RecyclerView.Adapter<RecyclerAdapter2.ViewHolder> (){
 
 
     override fun getItemCount(): Int {
-        return dataSource!!.size
+        return dataSource?.size ?: 0
     }
 
         @JvmName("setOnClickDeleteItem1")
@@ -47,8 +47,8 @@ class RecyclerAdapter2 : RecyclerView.Adapter<RecyclerAdapter2.ViewHolder> (){
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setListOfCurrencies(array1 : List<Currency>) {
-        this.dataSource = array1
+    fun setListOfCurrencies(array1 : List<Currency>?) {
+        this.dataSource = array1 ?: listOf()
         notifyDataSetChanged()
     }
 }

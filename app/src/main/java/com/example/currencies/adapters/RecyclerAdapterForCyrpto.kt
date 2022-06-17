@@ -44,19 +44,20 @@ class RecyclerAdapterForCyrpto : RecyclerView.Adapter<RecyclerAdapterForCyrpto.V
 
 
     override fun getItemCount(): Int {
-        return listOfCryptocurrencies!!.size
+        return listOfCryptocurrencies?.size ?: 0
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addList(list:List<Currency>){
+    fun addList(list:List<Currency>?){
         this.listOfCurrencies = list
-        listOfCryptocurrencies = listOfCurrencies!!.filter { it.typeOfCurrency =="crypto" }
-        usdRate = listOfCurrencies!!.find { it.name =="dolar amerykański" }!!.rate
+        listOfCryptocurrencies = listOfCurrencies?.filter { it.typeOfCurrency =="crypto" } ?: listOf()
+        usdRate = listOfCurrencies?.find { it.name =="dolar amerykański" }?.rate ?: "4.4"
         notifyDataSetChanged()
     }
 
     fun setOnAddButtonClickListener(callback : (Currency) -> Unit){
         this.onAddButtonClick = callback
+        notifyDataSetChanged()
     }
 }
 

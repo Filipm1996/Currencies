@@ -2,6 +2,7 @@ package com.example.currencies.ui
 
 
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.android.volley.toolbox.DiskBasedCache
 import com.example.currencies.data.db.Currency
@@ -9,7 +10,7 @@ import com.example.currencies.data.repositories.DeafultCurrencyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import java.lang.Exception
 
 
 class CurrencyViewModel(
@@ -37,6 +38,7 @@ class CurrencyViewModel(
 
     private fun updateRate(myList : List<Currency>,allList : List<Currency>){
         val usd = allList.find { it.name=="dolar amerykański" }
+        val usdRate = usd?.rate ?: "4.40"
         for(item in myList){
             for(item1 in allList){
                 if(item.typeOfCurrency!="crypto"){
@@ -46,7 +48,7 @@ class CurrencyViewModel(
                 }
                 }else if(item.typeOfCurrency == "crypto"){
                     if(item1.name == item.name){
-                        item.rate = (item1.rate.toDouble() * usd!!.rate.toDouble()).toString()
+                        item.rate = (item1.rate.toDouble() * usdRate.toDouble()).toString()
                     }
                 }
             }
@@ -66,23 +68,15 @@ class CurrencyViewModel(
         return mediator
     }
 
+    suspend fun getRecordsFromNomicsAndSaveToDb() =repository.getRecordsFromNomics()
 
-    suspend fun getRecordsFromNomics() =  repository.getRecordsFromNomics()
+    suspend fun getRecordsFromNBPAndSaveToDb () = repository.getRecordsFromNBP()
 
-    suspend fun getRecordsFromNomicsAndSaveToDb() {
-            val list = getRecordsFromNomics()
-            list.forEach {
-                val price = String.format("%.4f",it.price.toDouble())
-                price.replace(",",".")
-                val currency = Currency(it.name, price, "crypto")
-                insertCurrencyToAllDatabase(currency)
-            }
-    }
-
-    fun getAPIRecords(url :String, cache : DiskBasedCache){
+    fun getAPIRecords(){
         CoroutineScope(Dispatchers.IO).launch {
-        repository.gettingJsonStringFromNBP(url,cache)
-        getRecordsFromNomicsAndSaveToDb()
+            repository.deleteAllCurrencies()
+            getRecordsFromNBPAndSaveToDb()
+            getRecordsFromNomicsAndSaveToDb()
         }
     }
 

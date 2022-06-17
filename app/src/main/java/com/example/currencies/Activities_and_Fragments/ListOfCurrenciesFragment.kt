@@ -29,8 +29,7 @@ class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
         super.onCreate(savedInstanceState)
         mContext = requireContext()
         recyclerAdapter = RecyclerAdapter()
-        val factory = CurrencyViewModelFactory(repository(mContext))
-        viewModel = ViewModelProvider(this,factory)[CurrencyViewModel::class.java]
+        viewModel = ViewModelProviders.of(requireActivity())[CurrencyViewModel::class.java]
         }
 
     private fun setUpClickListeners() {
@@ -45,13 +44,17 @@ class ListOfCurrenciesFragment : Fragment(), LifecycleObserver{
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListOfCurrenciesBinding.inflate(inflater,container,false)
+        setUpClickListeners()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.getAllCurrencies().observe(viewLifecycleOwner, Observer {
             recyclerAdapter!!.addList(it.filter { it.typeOfCurrency == "normal" })
             binding.recyclerViewOfList.layoutManager = LinearLayoutManager(mContext)
             binding.recyclerViewOfList.adapter = recyclerAdapter
         })
-        setUpClickListeners()
-        return binding.root
     }
     fun setAlertDialog(currency: Currency) {
 

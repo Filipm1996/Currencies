@@ -28,7 +28,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder> () {
 
 
     override fun getItemCount(): Int {
-        return dataSource!!.size
+        return dataSource?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -45,8 +45,8 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder> () {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addList(list : List<Currency>){
-        this.dataSource = list.filter { it.typeOfCurrency=="normal" }
+    fun addList(list : List<Currency>?){
+        this.dataSource = list?.filter { it.typeOfCurrency=="normal" } ?: listOf()
         notifyDataSetChanged()
     }
 

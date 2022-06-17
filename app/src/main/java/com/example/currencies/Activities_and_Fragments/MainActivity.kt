@@ -28,10 +28,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         setContentView(binding.root)
         binding.bottomNav.setOnItemSelectedListener(this)
         setUpViewModel()
-        viewModel.getAPIRecords(
-            "https://api.nbp.pl/api/exchangerates/tables/A/?format=json",
-                DiskBasedCache(cacheDir, 1024 * 1024)
-            )
+        viewModel.getAPIRecords()
         listOfCurrenciesClicked()
     }
 
@@ -79,3 +76,4 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     }
 
 }
+

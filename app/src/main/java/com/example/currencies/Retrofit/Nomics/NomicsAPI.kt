@@ -1,4 +1,4 @@
-package com.example.currencies.Nomics
+package com.example.currencies.Retrofit.Nomics
 
 import retrofit2.http.GET
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.currencies.adapters.RecyclerAdapterForCyrpto
 import com.example.currencies.data.db.Currency
@@ -32,8 +33,7 @@ class CryptoFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mContext =requireContext()
         recyclerAdapter = RecyclerAdapterForCyrpto()
-        val factory = CurrencyViewModelFactory(repository(mContext))
-        viewModel = ViewModelProvider(this,factory)[CurrencyViewModel::class.java]
+        viewModel = ViewModelProviders.of(requireActivity())[CurrencyViewModel::class.java]
         }
 
     override fun onCreateView(
@@ -42,6 +42,11 @@ class CryptoFragment : Fragment() {
     ): View {
         lifecycleOwner = viewLifecycleOwner
         binding = FragmentCryptoBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.getAllCurrencies().observe(lifecycleOwner) {
             binding.recyclerViewForCrypto.layoutManager = LinearLayoutManager(mContext)
             recyclerAdapter!!.addList(it)
@@ -49,9 +54,7 @@ class CryptoFragment : Fragment() {
             binding.recyclerViewForCrypto.adapter = recyclerAdapter
 
         }
-        return binding.root
     }
-
     fun setUpClickListeners(){
         recyclerAdapter!!.setOnAddButtonClickListener {
             setAddButtonAlertDialog(it)

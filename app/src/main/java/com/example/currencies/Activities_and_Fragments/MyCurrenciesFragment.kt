@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.currencies.data.repositories.repository
 import com.example.currencies.databinding.FragmentMyCurrenciesBinding
@@ -27,8 +28,7 @@ class MyCurrenciesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = requireContext()
-        val factory = CurrencyViewModelFactory(repository(mContext))
-        viewModel = ViewModelProvider(this, factory)[CurrencyViewModel::class.java]
+        viewModel = ViewModelProviders.of(requireActivity())[CurrencyViewModel::class.java]
     }
 
     private fun setOnClickListeners() {

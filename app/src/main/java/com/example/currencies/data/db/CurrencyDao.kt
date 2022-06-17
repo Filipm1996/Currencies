@@ -20,4 +20,7 @@ interface CurrencyDao {
     @Query("DELETE FROM currencyTable")
     fun deleteAll()
 
+    @Query("UPDATE currencyTable SET rate = :rate WHERE name = :name")
+    fun updateRate(rate:String,name: String)
+
 }
