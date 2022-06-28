@@ -70,9 +70,9 @@ class repository(
         try {
             val response = RetrofitInstanceForNBP.api.getNBPrecords()
             val listOfCurrencies = response[0].rates
-            println("here")
                 for (record in listOfCurrencies) {
-                    val currency = Currency(record.currency, record.mid.toString(), "normal")
+                    val price = String.format("%.4f",record.mid)
+                    val currency = Currency(record.currency, price, "normal")
                     insertCurrencyToAllDatabase(currency)
                 }
 
