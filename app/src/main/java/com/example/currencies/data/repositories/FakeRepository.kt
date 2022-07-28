@@ -2,9 +2,7 @@ package com.example.currencies.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.android.volley.toolbox.DiskBasedCache
-import com.example.currencies.Retrofit.NBP.NBPresponse
-import com.example.currencies.Retrofit.Nomics.NomicsResponseItem
+import com.example.currencies.data.Retrofit.Nomics.NomicsResponseItem
 import com.example.currencies.data.db.Currency
 
 

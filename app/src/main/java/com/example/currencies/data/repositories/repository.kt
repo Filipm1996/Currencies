@@ -3,24 +3,12 @@ package com.example.currencies.data.repositories
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.BasicNetwork
-import com.android.volley.toolbox.DiskBasedCache
-import com.android.volley.toolbox.HurlStack
-import com.android.volley.toolbox.JsonArrayRequest
-import com.example.currencies.Retrofit.NBP.NBPresponse
-import com.example.currencies.Retrofit.NBP.RetrofitInstanceForNBP
-import com.example.currencies.Retrofit.Nomics.NomicsResponseItem
-import com.example.currencies.Retrofit.Nomics.RetrofitInstanceForNomics
+import com.example.currencies.data.Retrofit.NBP.RetrofitInstanceForNBP
+import com.example.currencies.data.Retrofit.Nomics.NomicsResponseItem
+import com.example.currencies.data.Retrofit.Nomics.RetrofitInstanceForNomics
 import com.example.currencies.data.db.Currency
 import com.example.currencies.data.db.CurrencyDataBase
 import com.example.currencies.other.Constants
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
 import java.lang.Exception
 
 class repository(

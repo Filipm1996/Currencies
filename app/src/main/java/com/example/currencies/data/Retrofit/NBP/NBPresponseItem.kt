@@ -1,4 +1,4 @@
-package com.example.currencies.Retrofit.NBP
+package com.example.currencies.data.Retrofit.NBP
 
 data class NBPresponseItem(
     val effectiveDate: String,
